@@ -123,7 +123,9 @@ service.addEventListener('messages-changed', function(e) {
 
     observers: [
       '_lastCheckedChanged(lastChecked)',
-      '_messagesResponseReady(messagesResponse.*)'
+      '_messagesResponseReady(messagesResponse)',
+      '_updateState(messages.*)',
+      '_updateState(unread.*)'
     ],
     ready: function() {
       if (!this.lastChecked) {
@@ -200,14 +202,11 @@ service.addEventListener('messages-changed', function(e) {
      * @param {[type]} messagesResponse [description]
      * @return {[type]} [description]
      */
-    _messagesResponseReady: function(record) {
-      if (!record || !record.path || !record.base) {
+    _messagesResponseReady: function(response) {
+      if (!response) {
         return;
       }
-      if (record.path === 'messagesResponse') {
-        return this.sync(record.base);
-      }
-      return this.updateRecord(record);
+      return this.sync(response);
     },
 
     sync: function(incommingMessages) {
@@ -276,6 +275,57 @@ service.addEventListener('messages-changed', function(e) {
         return 1;
       }
       return 0;
+    },
+    /**
+     * Updates a status of a message in the data store when a message
+     * part changes. This only works when a single message in the array has been
+     * updated (either `unread` or `messages`).
+     */
+    _updateState: function(record) {
+      if (!record || !record.path || !record.base) {
+        return;
+      }
+      if (['messages', 'unread'].indexOf(record.path) !== -1) {
+        return;
+      }
+      var parts = record.path.split('.');
+      if (!parts[1] || parts[1].indexOf('#') !== 0) {
+        return;
+      }
+      var dataType = parts[0];
+      var item = Polymer.Collection.get(this[dataType]).getItem(parts[1]);
+      if (!item || !item.key) {
+        console.warn('Item not recognized for path ', record.path);
+        return;
+      }
+      return this.client.transaction('set', 'data', undefined, item)
+      .then(() => this._postUpdateMessage(dataType, item));
+    },
+    /**
+     * Updates `unread` array depending on update state.
+     *
+     * @param {String} dataType Either `unread` or `messages`.
+     * @param {Object} item Updated item object
+     * @param {String} indexPath Polymer's data path index. It's `#index`.
+     */
+    _postUpdateMessage: function(dataType, item) {
+      if (dataType === 'messages' && item.read === 0) {
+        if (!this.unread) {
+          this.unread = [];
+        }
+        this.push('unread', item);
+        this.unread.sort(this._messagesSort);
+        return;
+      }
+      if (dataType === 'unread' || item.read === 1) {
+        let index = this.unread.findIndex(_obj => _obj === item);
+        if (index === -1) {
+          console.warn('Message index not found');
+          return;
+        }
+        this.splice(dataType, index, 1);
+        return;
+      }
     }
   });
   </script>
