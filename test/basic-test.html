@@ -15,31 +15,90 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="../../iron-test-helpers/test-helpers.js"></script>
-    <script src="../../iron-test-helpers/mock-interactions.js"></script>
-
-    <!-- Step 1: import the element to test -->
     <link rel="import" href="../arc-messages-service.html">
+    <script src="../../chance/dist/chance.min.js"></script>
+    <script src="messages-server.js"></script>
   </head>
   <body>
 
-    <test-fixture id="basic">
+    <test-fixture id="auto">
       <template>
-        <arc-messages-service></arc-messages-service>
+        <arc-messages-service platform="chrome" auto-messages></arc-messages-service>
       </template>
     </test-fixture>
 
     <script>
-    /* global fixture, assert */
-    suite('basic', function() {
+    /* global fixture, assert, MessagingServer */
+    suite('Basics', function() {
 
-      var element;
-      setup(function() {
-        element = fixture('basic');
+      suiteSetup(function() {
+        MessagingServer.createServer();
       });
 
-      test('`arc-messages-service` should be initialized', function() {
-        assert.equal(element.isAttached, true, 'element.isAttached equals true');
+      suiteTeardown(function() {
+        MessagingServer.restore();
+      });
+
+      this.deleteDatastore = function() {
+        return new Promise((resolve, reject) => {
+          const request = window.indexedDB.deleteDatabase('arc-messages');
+          request.onerror = function() {
+            reject(new Error('Error deleting database'));
+          };
+          request.onsuccess = function() {
+            console.log('CLEARING DATASTORE');
+            resolve();
+          };
+          request.onblocked = function() {
+            console.log('TRANSACTION BLOCKED. Whatev.');
+            resolve();
+          };
+          request.onupgradeneeded = function() {
+            resolve();
+          };
+        });
+      };
+
+      suite('Settings messages', () => {
+        let element;
+        // suiteSetup(() => this.deleteDatastore());
+        suiteTeardown(() => {
+          let p;
+          if (element) {
+            p = element.closeDb();
+          } else {
+            p = Promise.resolve();
+          }
+          return p.then(() => this.deleteDatastore());
+        });
+
+        setup(function() {
+          element = fixture('auto');
+        });
+
+        test('Checks for `lastChecked`', (done) => {
+          element.addEventListener('last-checked-changed', function clb(e) {
+            element.removeEventListener('last-checked-changed', clb);
+            assert.typeOf(e.detail.value, 'number');
+            done();
+          });
+        });
+
+        test('Has messages', (done) => {
+          element.addEventListener('messages-changed', function clb(e) {
+            element.removeEventListener('messages-changed', clb);
+            assert.typeOf(e.detail.value, 'array');
+            done();
+          });
+        });
+
+        test('Has unread', (done) => {
+          element.addEventListener('unread-changed', function clb(e) {
+            element.removeEventListener('unread-changed', clb);
+            assert.typeOf(e.detail.value, 'array');
+            done();
+          });
+        });
       });
     });
     </script>
