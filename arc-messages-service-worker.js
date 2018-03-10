@@ -21,10 +21,12 @@
   const DB_OPENS = '__dbOpens';
   const STORE_NAMES = ['messages', 'meta'];
 
-  var MIGRATIONS = [
+  const MIGRATIONS = [
     // v1
     function(context) {
-      const msgs = context.database.createObjectStore(STORE_NAMES[0], {keyPath: 'key'});
+      const msgs = context.database.createObjectStore(STORE_NAMES[0], {
+        keyPath: 'key'
+      });
       msgs.createIndex('time', 'time', {unique: true});
       msgs.createIndex('read', 'read', {unique: false});
       context.database.createObjectStore(STORE_NAMES[1]);
@@ -54,21 +56,25 @@
         console.error(error);
       });
     }
-
+    /**
+     * Opens the datastore.
+     *
+     * @return {Promise} Promise resolved when the datastore is opened.
+     */
     openDb() {
       this[DB_OPENS] = this[DB_OPENS] || new Promise((resolve, reject) => {
-        var request = self.indexedDB.open(this[DB_NAME], DB_VERSION);
-        request.onupgradeneeded = function(event) {
-          console.log('Upgrade needed:', event.oldVersion, '=>', event.newVersion);
-          var context = {
+        const request = self.indexedDB.open(this[DB_NAME], DB_VERSION);
+        request.onupgradeneeded = (event) => {
+          console.log('Upgrade needed:',
+            event.oldVersion, '=>', event.newVersion);
+          const context = {
             database: request.result,
             dbName: this[DB_NAME]
           };
-
-          for (var i = event.oldVersion; i < event.newVersion; ++i) {
+          for (let i = event.oldVersion; i < event.newVersion; ++i) {
             MIGRATIONS[i].call(this, context);
           }
-        }.bind(this);
+        };
 
         request.onsuccess = function() {
           resolve(request.result);
@@ -80,7 +86,11 @@
 
       return this[DB_OPENS];
     }
-
+    /**
+     * Closes active connection to the datastore.
+     *
+     * @return {Promise}
+     */
     closeDb() {
       if (this[DB_OPENS] === null) {
         return Promise.resolve();
@@ -107,14 +117,14 @@
      */
     operateOnStore(operation, storeName, mode, ...operationArgs) {
       return this.openDb()
-      .then(db => {
+      .then((db) => {
         return new Promise(function(resolve, reject) {
-          var transaction;
-          var request;
+          let transaction;
+          let request;
           try {
             transaction = db.transaction(storeName, mode);
-            var store = transaction.objectStore(storeName);
-            request = store[operation].apply(store, operationArgs);
+            let store = transaction.objectStore(storeName);
+            request = store[operation].apply(store, ...operationArgs);
           } catch (e) {
             return reject(e);
           }
@@ -127,7 +137,12 @@
         });
       });
     }
-
+    /**
+     * Lists keys in the datastore.
+     *
+     * @param {String} type Type name
+     * @return {Promise}
+     */
     keysFor(type) {
       const name = this.storeName(type);
       if (!name) {
@@ -135,10 +150,15 @@
       }
       return this.listKeys(name);
     }
-
+    /**
+     * Lists keys in the data store.
+     *
+     * @param {String} storeName Name of the data store.
+     * @return {Promise}
+     */
     listKeys(storeName) {
       return this.openDb()
-      .then(db => {
+      .then((db) => {
         return new Promise(function(resolve, reject) {
           let transaction;
           let keys = [];
@@ -165,11 +185,23 @@
         });
       });
     }
-
+    /**
+     * List data for a type.
+     *
+     * @param {String} type
+     * @return {Promise}
+     */
     dataFor(type) {
       return this.dataForIndex(type);
     }
-
+    /**
+     * Lists data for given type and index.
+     *
+     * @param {String} type Entity type
+     * @param {String} index Index name
+     * @param {String} value Index value
+     * @return {Promise}
+     */
     dataForIndex(type, index, value) {
       const name = this.storeName(type);
       if (!name) {
@@ -177,11 +209,18 @@
       }
       return this.listObjects(name, index, value);
     }
-
+    /**
+     * Lists data for given type and index.
+     *
+     * @param {String} storeName Store name
+     * @param {String} index Index name
+     * @param {String} value Index value
+     * @return {Promise}
+     */
     listObjects(storeName, index, value) {
       /* global IDBKeyRange */
       return this.openDb()
-      .then(db => {
+      .then((db) => {
         return new Promise(function(resolve, reject) {
           let transaction;
           let keys = [];
@@ -238,7 +277,8 @@
      * @param {string} storeName The name of the object store to operate on.
      * @param {string} key The key in the object store that corresponds to the
      * value that should be put.
-     * @param {*} value The value to be put in the object store at the given key.
+     * @param {*} value The value to be put in the object store
+     * at the given key.
      * @return {Promise} A promise that resolves with the outcome of the
      * operation.
      */
@@ -270,7 +310,7 @@
      */
     transaction(method, type, key, value) {
       value = value || null;
-      var store = this.storeName(type);
+      const store = this.storeName(type);
       if (!store) {
         return Promise.reject(new Error('Type not supported: ' + type));
       }
@@ -293,13 +333,13 @@
      */
     bulkSet(storeName, values) {
       return this.openDb()
-      .then(db => {
+      .then((db) => {
         return new Promise(function(resolve, reject) {
-          var transaction;
+          let transaction;
           try {
             transaction = db.transaction(storeName, 'readwrite');
-            var store = transaction.objectStore(storeName);
-            values.forEach(obj => {
+            const store = transaction.objectStore(storeName);
+            values.forEach((obj) => {
               store.put(obj);
             });
           } catch (e) {
@@ -321,7 +361,7 @@
      * @return {String|undefined} Store name for data type.
      */
     storeName(type) {
-      var store;
+      let store;
       switch (type) {
         case 'meta': store = STORE_NAMES[1]; break;
         case 'data': store = STORE_NAMES[0]; break;
@@ -340,7 +380,7 @@
       port.addEventListener('message', (event) => {
         this.handleClientMessage(event, port);
       });
-      var isPortInClient = port.toString() in this[CLIENT_PORTS];
+      let isPortInClient = port.toString() in this[CLIENT_PORTS];
       if (!isPortInClient) {
         this[CLIENT_PORTS].push(port);
       }
@@ -362,15 +402,18 @@
      */
     handleClientMessage(event, port) {
       if (!event.data) {
-        return null;
+        return;
       }
 
-      var id = event.data.id;
+      const id = event.data.id;
       switch (event.data.payload) {
         case 'message-service-close-db':
           this.closeDb()
           .then(function() {
-            port.postMessage({payload: 'message-service-db-closed', 'id': id});
+            port.postMessage({
+              payload: 'message-service-db-closed',
+              id: id
+            });
           });
         break;
         case 'message-service-transaction':
@@ -415,7 +458,7 @@
           });
         break;
         case 'message-service-disconnect':
-          var index = this[CLIENT_PORTS].indexOf(port);
+          const index = this[CLIENT_PORTS].indexOf(port);
           if (index !== -1) {
             this[CLIENT_PORTS].splice(index, 1);
           }
