@@ -16,30 +16,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <title>arc-messages-service demo</title>
 
-  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
   <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
-
   <link rel="import" href="../arc-messages-service.html">
 
-  <style is="custom-style" include="demo-pages-shared-styles">
-
-    .vertical-section-container {
-      max-width: 600px;
-    }
-
-  </style>
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </custom-style>
 </head>
 <body unresolved>
   <div class="vertical-section-container centered">
     <h3>The `arc-messages-service`</h3>
     <demo-snippet>
-      <template is="dom-bind">
-        <arc-messages-service platform="chrome" messages="{{messages}}" unread="{{unread}}" auto-messages></arc-messages-service>
-        <p>Unread size: [[unread.length]]</p>
-        <p>All messages size: [[messages.length]]</p>
-      </template>
+      <dom-bind id="demo">
+        <template is="dom-bind">
+          <arc-messages-service platform="chrome" messages="{{messages}}" unread="{{unread}}" auto-messages></arc-messages-service>
+          <p>Unread size: [[unread.length]]</p>
+          <p>All messages size: [[messages.length]]</p>
+        </template>
+      </dom-bind>
     </demo-snippet>
   </div>
 </body>

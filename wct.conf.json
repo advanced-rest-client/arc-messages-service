@@ -10,11 +10,19 @@
       "browsers": [{
         "browserName": "firefox",
         "platform": "Windows 10",
-        "version": "latest-2"
+        "version": "latest-4"
+      }, {
+        "browserName": "firefox",
+        "platform": "Windows 10",
+        "version": "latest"
       }, {
         "browserName": "chrome",
         "platform": "Windows 10",
-        "version": "latest-2"
+        "version": "latest-4"
+      }, {
+        "browserName": "chrome",
+        "platform": "Windows 10",
+        "version": "latest"
       }]
     }
   }

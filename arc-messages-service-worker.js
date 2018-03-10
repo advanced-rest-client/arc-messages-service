@@ -124,7 +124,7 @@
           try {
             transaction = db.transaction(storeName, mode);
             let store = transaction.objectStore(storeName);
-            request = store[operation].apply(store, ...operationArgs);
+            request = store[operation].apply(store, operationArgs);
           } catch (e) {
             return reject(e);
           }
