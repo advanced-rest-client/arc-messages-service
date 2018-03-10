@@ -1,6 +1,6 @@
 {
   "name": "@api-components/arc-messages-service",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "description": "Messages synchronization service for ARC",
   "devDependencies": {
