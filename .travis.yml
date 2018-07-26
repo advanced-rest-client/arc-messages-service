@@ -14,7 +14,7 @@ addons:
   sauce_connect: true
 script:
 - polymer lint arc-messages-service.html
-- xvfb-run polymer test polymer test --plugin local
+- xvfb-run polymer test --plugin local
 - if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test --plugin sauce --job-name
   "arc-messages-service:${TRAVIS_BRANCH}" --build-number=${TRAVIS_BUILD_NUMBER}; fi
 cache:
