@@ -1,21 +1,21 @@
 {
-  "name": "@api-components/arc-messages-service",
-  "version": "2.0.2",
-  "license": "Apache-2.0 OR CC-BY-4.0",
+  "name": "@advanced-rest-client/arc-messages-service",
+  "version": "2.0.3",
+  "license": "Apache-2.0",
   "description": "Messages synchronization service for ARC",
+  "authors": [
+    "Pawel Psztyc",
+    "The Advanced REST client authors <arc@mulesoft.com>"
+  ],
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.1.1",
-    "bower": "^1.8.0"
+    "@polymer/gen-typescript-declarations": "^1.1.1"
   },
   "private": false,
   "main": "arc-messages-service.html",
-  "author": "The Advanced REST client authors <arc@mulesoft.com>",
   "scripts": {
-    "serve": "node_modules/.bin/polymer serve",
-    "lint": "node_modules/.bin/polymer lint arc-messages-service.html --rules polymer-1",
-    "test-sauce": "node_modules/.bin/polymer test --plugin sauce --job-name \"arc-messages-service:local-test\"",
-    "test": "node_modules/.bin/polymer test --plugin local",
-    "deps": "npm install --quiet && bower install --quiet",
+    "lint": "polymer lint arc-messages-service.html",
+    "test-sauce": "polymer test --plugin sauce --job-name \"arc-messages-service:local-test\"",
+    "test": "polymer test --plugin local",
     "update-types": "bower install && gen-typescript-declarations --deleteExisting --outDir ."
   },
   "repository": {
