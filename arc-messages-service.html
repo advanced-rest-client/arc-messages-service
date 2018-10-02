@@ -25,7 +25,9 @@ will request for list of messages since last sync time.
 ### Example
 
 ```html
-<arc-messages-service platform="electron"></arc-messages-service>
+<arc-messages-service
+  platform="electron"
+  channel="stable"></arc-messages-service>
 <script>
 var service = document.querySelector('arc-messages-service');
 service.addEventListener('unread-changed', function(e) {
@@ -54,15 +56,20 @@ service.addEventListener('messages-changed', function(e) {
   </template>
   <script>
   class ArcMessagesService extends Polymer.Element {
-    static get is() { return 'arc-messages-service'; }
+    static get is() {return 'arc-messages-service';}
     static get properties() {
       return {
         // Name of the platform to serve data from
         platform: String,
+        /**
+         * Application release channel.
+         * Usually it's stable, beta and dev.
+         */
+        channel: String,
         // Messages endpoint URI
         endpointUri: {
           type: String,
-          value: 'https://advancedrestclient-1155.appspot.com/info/messages'
+          value: 'https://app.advancedrestclient.com/info/messages'
           // value: 'http://localhost:8080/info/messages'
         },
         // List of messages
@@ -88,7 +95,7 @@ service.addEventListener('messages-changed', function(e) {
         // Full URL to the messages endpoint with parameters.
         _serviceUrl: {
           type: String,
-          computed: '_computeServiceUrl(endpointUri, platform, _queryParams)'
+          computed: '_computeServiceUrl(endpointUri, platform, channel, _queryParams)'
         },
         /**
          * A URL that points to the script to load for the corresponding
@@ -180,13 +187,20 @@ service.addEventListener('messages-changed', function(e) {
     /**
      * Computes service URL depending on platform and url parameters
      *
+     * @param {String} endpointUri API endpoint URI.
+     * @param {String} platform Application platform
+     * @param {String} channel Application release channel
+     * @param {Object} params Additional query parameters
      * @return {String} Full URL to the messages service endpoint.
      */
-    _computeServiceUrl(endpointUri, platform, params) {
+    _computeServiceUrl(endpointUri, platform, channel, params) {
       if (!endpointUri || !platform || !params) {
         return;
       }
       let url = endpointUri + '?platform=' + platform;
+      if (channel) {
+        url += '&channel=' + channel;
+      }
       Object.keys(params).forEach((name) => {
         url += '&' + name + '=' + encodeURIComponent(params[name]);
       });
@@ -207,8 +221,8 @@ service.addEventListener('messages-changed', function(e) {
     }
     /**
      * This is called only when the response is ready, not when any of the
-     * @param {[type]} messagesResponse [description]
-     * @return {[type]} [description]
+     * @param {Object} response
+     * @return {Promise} [description]
      */
     _messagesResponseReady(response) {
       if (!response) {
@@ -248,6 +262,8 @@ service.addEventListener('messages-changed', function(e) {
     }
     /**
      * Updates list of unread messages.
+     *
+     * @return {Promise}
      */
     updateUnread() {
       return this.client.indexObjects('data', 'read', 0)
@@ -267,6 +283,8 @@ service.addEventListener('messages-changed', function(e) {
     /**
      * Reads list of all messages from the data store.
      * It sets the `messages` property when ready.
+     *
+     * @return {Promise}
      */
     readMessages() {
       return this.client.listObjects('data')
@@ -278,6 +296,10 @@ service.addEventListener('messages-changed', function(e) {
     }
     /**
      * Sort function for the messages.
+     *
+     * @param {Object} a
+     * @param {Object} b
+     * @return {Number}
      */
     _messagesSort(a, b) {
       if (a.time > b.time) {
@@ -292,6 +314,9 @@ service.addEventListener('messages-changed', function(e) {
      * Updates a status of a message in the data store when a message
      * part changes. This only works when a single message in the array has been
      * updated (either `unread` or `messages`).
+     *
+     * @param {Object} record Polymer's change record
+     * @return {Promise}
      */
     _updateState(record) {
       if (!record || !record.path || !record.base) {
@@ -330,7 +355,7 @@ service.addEventListener('messages-changed', function(e) {
         return;
       }
       if (dataType === 'unread' || item.read === 1) {
-        let index = this.unread.findIndex(_obj => _obj === item);
+        let index = this.unread.findIndex((_obj) => _obj === item);
         if (index === -1) {
           console.warn('Message index not found');
           return;
