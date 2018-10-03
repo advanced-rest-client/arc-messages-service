@@ -1,3 +1,13 @@
+<a name="2.0.4"></a>
+## [2.0.4](https://github.com/advanced-rest-client/arc-messages-service/compare/2.0.1...2.0.4) (2018-10-03)
+
+
+### Fix
+
+* Fixing test command ([8bc3ff0dbceee53e01a8959ad8192dac9f1d7655](https://github.com/advanced-rest-client/arc-messages-service/commit/8bc3ff0dbceee53e01a8959ad8192dac9f1d7655))
+
+
+
 <a name="2.0.3"></a>
 ## [2.0.3](https://github.com/advanced-rest-client/arc-messages-service/compare/2.0.1...2.0.3) (2018-07-26)
 

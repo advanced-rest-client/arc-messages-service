@@ -31,7 +31,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <demo-snippet>
       <dom-bind id="demo">
         <template is="dom-bind">
-          <arc-messages-service platform="chrome" messages="{{messages}}" unread="{{unread}}" auto-messages></arc-messages-service>
+          <!-- Dev endpoint-uri="http://localhost:8080/info/messages" -->
+          <arc-messages-service
+            platform="test"
+            channel="test"
+            messages="{{messages}}"
+            unread="{{unread}}"
+            auto-messages></arc-messages-service>
           <p>Unread size: [[unread.length]]</p>
           <p>All messages size: [[messages.length]]</p>
         </template>
