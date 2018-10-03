@@ -13,7 +13,7 @@ const MessagingServer = {
   },
 
   mockList: function() {
-    const url = /^https:\/\/advancedrestclient-1155\.appspot\.com\/*/;
+    const url = /^https:\/\/app\.advancedrestclient\.com\/*/;
     this.srv.respondWith('GET', url, function(request) {
       let result = {
         data: []
