@@ -5,13 +5,16 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   arc-messages-service.html
+ *   arc-messages-service.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../polymer/types/lib/utils/render-status.d.ts" />
-/// <reference path="../iron-ajax/iron-ajax.d.ts" />
-/// <reference path="arc-messages-service-client.d.ts" />
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+import {ArcMessagesServiceClient} from './arc-messages-service-client.js';
+
+export {ArcMessagesService};
 
 /**
  * Messages synchronization service for ARC
@@ -39,7 +42,7 @@
  * </script>
  * ```
  */
-declare class ArcMessagesService extends Polymer.Element {
+declare class ArcMessagesService extends PolymerElement {
 
   /**
    * Name of the platform to serve data from
@@ -195,6 +198,9 @@ declare class ArcMessagesService extends Polymer.Element {
   closeDb(): Promise<any>|null;
 }
 
-interface HTMLElementTagNameMap {
-  "arc-messages-service": ArcMessagesService;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "arc-messages-service": ArcMessagesService;
+  }
 }

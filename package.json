@@ -1,29 +1,49 @@
 {
-  "name": "@advanced-rest-client/arc-messages-service",
-  "version": "2.0.4",
-  "license": "Apache-2.0",
   "description": "Messages synchronization service for ARC",
+  "keywords": [
+    "web-components",
+    "polymer"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/advanced-rest-client/arc-messages-service.git"
+  },
+  "name": "@advanced-rest-client/arc-messages-service",
+  "version": "3.0.0-preview.1",
+  "license": "Apache-2.0",
   "authors": [
     "Pawel Psztyc",
     "The Advanced REST client authors <arc@mulesoft.com>"
   ],
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.5.1"
+    "@polymer/gen-typescript-declarations": "^1.6.1",
+    "@polymer/iron-demo-helpers": "^3.0.0",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "@polymer/iron-component-page": "^4.0.0",
+    "@polymer/test-fixture": "^4.0.2",
+    "chai": "^4.2.0",
+    "chance": "^1.0.18",
+    "mocha": "^5.2.0",
+    "sinon": "^7.2.3",
+    "wct-mocha": "^1.0.0"
   },
-  "private": false,
-  "main": "arc-messages-service.html",
+  "main": "arc-messages-service.js",
   "scripts": {
     "lint": "polymer lint arc-messages-service.html",
     "test-sauce": "polymer test --plugin sauce --job-name \"arc-messages-service:local-test\"",
     "test": "polymer test --plugin local",
-    "update-types": "bower install && gen-typescript-declarations --deleteExisting --outDir ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/advanced-rest-client/arc-messages-service.git"
+    "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
   },
   "bugs": {
     "url": "https://github.com/advanced-rest-client/arc-messages-service/issues",
     "email": "arc@mulesoft.com"
+  },
+  "contributors": [
+    "Pawel Psztyc",
+    "The Advanced REST client authors <arc@mulesoft.com>"
+  ],
+  "dependencies": {
+    "@polymer/iron-ajax": "^3.0.0",
+    "@polymer/polymer": "^3.0.0"
   }
 }

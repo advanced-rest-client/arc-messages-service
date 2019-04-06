@@ -5,8 +5,14 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   arc-messages-service-client.html
+ *   arc-messages-service-client.js
  */
+
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+export {ArcMessagesServiceClient};
 
 declare class ArcMessagesServiceClient {
   constructor(workerUrl: any);

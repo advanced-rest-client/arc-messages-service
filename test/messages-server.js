@@ -1,6 +1,7 @@
-/* global sinon, chance */
-
-const MessagingServer = {
+/* global chance */
+import '../../../chance/dist/chance.min.js';
+import sinon from '../../../sinon/pkg/sinon-esm.js';
+export const MessagingServer = {
   createServer: function() {
     this.srv = sinon.fakeServer.create({
       autoRespond: true
