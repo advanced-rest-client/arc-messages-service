@@ -54,8 +54,7 @@ export class ArcMessagesService extends PolymerElement {
       display: none !important;
     }
     </style>
-    <iron-ajax url="[[_serviceUrl]]" auto="" handle-as="json" last-response="{{messagesResponse}}"></iron-ajax>
-`;
+    <iron-ajax url="[[_serviceUrl]]" auto="" handle-as="json" last-response="{{messagesResponse}}"></iron-ajax>`;
   }
 
   static get is() {
@@ -334,11 +333,12 @@ export class ArcMessagesService extends PolymerElement {
       return;
     }
     const parts = record.path.split('.');
-    if (!parts[1] || parts[1].indexOf('#') !== 0) {
+    const index = Number(parts[1]);
+    if (index !== index) {
       return;
     }
     const dataType = parts[0];
-    const item = undefined.get(this[dataType]).getItem(parts[1]);
+    const item = this.get(`${dataType}.${index}`);
     if (!item || !item.key) {
       console.warn('Item not recognized for path ', record.path);
       return;
