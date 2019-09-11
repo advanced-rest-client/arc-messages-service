@@ -12,6 +12,8 @@
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
 
+import {LitElement, html, css} from 'lit-element';
+
 import {ArcMessagesServiceClient} from './arc-messages-service-client.js';
 
 export {ArcMessagesService};
@@ -42,7 +44,18 @@ export {ArcMessagesService};
  * </script>
  * ```
  */
-declare class ArcMessagesService extends PolymerElement {
+declare class ArcMessagesService extends LitElement {
+  readonly _serviceUrl: any;
+
+  /**
+   * List of messages
+   */
+  messages: any[]|null|undefined;
+
+  /**
+   * List of unread messages
+   */
+  unread: any[]|null|undefined;
 
   /**
    * Name of the platform to serve data from
@@ -61,16 +74,6 @@ declare class ArcMessagesService extends PolymerElement {
   endpointUri: string|null|undefined;
 
   /**
-   * List of messages
-   */
-  messages: any[]|null|undefined;
-
-  /**
-   * List of unread messages
-   */
-  unread: any[]|null|undefined;
-
-  /**
    * Timestamp of last check opeartion
    */
   lastChecked: number|null|undefined;
@@ -79,11 +82,6 @@ declare class ArcMessagesService extends PolymerElement {
    * List of query parameters to use with the request
    */
   _queryParams: object|null|undefined;
-
-  /**
-   * Full URL to the messages endpoint with parameters.
-   */
-  readonly _serviceUrl: string|null|undefined;
 
   /**
    * A URL that points to the script to load for the corresponding
@@ -101,18 +99,15 @@ declare class ArcMessagesService extends PolymerElement {
    * responsible for negotiating transactions with the corresponding
    * Worker spawned from `workerUrl`.
    */
-  readonly client: object|null|undefined;
+  client: object|null|undefined;
 
   /**
-   * Response ferom the ARC messages endpoint.
-   */
-  messagesResponse: object|null|undefined;
-
-  /**
-   * If set it will read list of all mesages from the datastore
+   * If set it will read list of all message from the datastore
    */
   autoMessages: boolean|null|undefined;
-  ready(): void;
+  constructor();
+  firstUpdated(): void;
+  render(): any;
 
   /**
    * Computes `_queryParams` based on the value and stores assigned value
@@ -126,18 +121,7 @@ declare class ArcMessagesService extends PolymerElement {
    * Checkes when the DB was synchronized and sets `lastChecked` property
    * that triggest `iron-ajax` to request a data.
    */
-  _whenChecked(): void;
-
-  /**
-   * Computes service URL depending on platform and url parameters
-   *
-   * @param endpointUri API endpoint URI.
-   * @param platform Application platform
-   * @param channel Application release channel
-   * @param params Additional query parameters
-   * @returns Full URL to the messages service endpoint.
-   */
-  _computeServiceUrl(endpointUri: String|null, platform: String|null, channel: String|null, params: object|null): String|null;
+  _whenChecked(): any;
 
   /**
    * Stores the information when last time checked for a messages.
@@ -176,26 +160,20 @@ declare class ArcMessagesService extends PolymerElement {
   _messagesSort(a: object|null, b: object|null): Number|null;
 
   /**
-   * Updates a status of a message in the data store when a message
-   * part changes. This only works when a single message in the array has been
-   * updated (either `unread` or `messages`).
+   * Marks a single message as read.
    *
-   * @param record Polymer's change record
-   */
-  _updateState(record: object|null): Promise<any>|null;
-
-  /**
-   * Updates `unread` array depending on update state.
+   * Note, this changes the `unread` property.
    *
-   * @param dataType Either `unread` or `messages`.
-   * @param item Updated item object
+   * @param key Message key property
    */
-  _postUpdateMessage(dataType: String|null, item: object|null): void;
+  markRead(key: String|null): Promise<any>|null;
+  makrkAllRead(): any;
 
   /**
    * Closes datastore connection in shared worker.
    */
   closeDb(): Promise<any>|null;
+  _messagesHandler(e: any): void;
 }
 
 declare global {

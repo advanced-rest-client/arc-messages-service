@@ -7,17 +7,9 @@
 
 # arc-messages-service
 
-An applet to edit saved request data.
+A service to synchronize messages from service provider to app users.
 
-## Example:
-
-```html
-<arc-messages-service></arc-messages-service>
-```
-
-## API components
-
-This components is a part of [API components ecosystem](https://elements.advancedrestclient.com/)
+The service queries ARC application server for new messages and stores in local data store. The messages are presented to the user in message center of Advanced REST Client.
 
 ## Usage
 
@@ -26,54 +18,48 @@ This components is a part of [API components ecosystem](https://elements.advance
 npm install --save @advanced-rest-client/arc-messages-service
 ```
 
-### In an html file
-
-```html
-<html>
-  <head>
-    <script type="module">
-      import './node_modules/@advanced-rest-client/arc-messages-service/arc-messages-service.js';
-    </script>
-  </head>
-  <body>
-    <arc-messages-service></arc-messages-service>
-  </body>
-</html>
-```
-
-### In a Polymer 3 element
+### In a LitElement
 
 ```js
-import {PolymerElement, html} from './node_modules/@polymer/polymer/polymer-element.js';
-import './node_modules/@advanced-rest-client/arc-messages-service/arc-messages-service.js';
+import { LitElement, html } from 'lit-element';
+import '@advanced-rest-client/arc-messages-service/arc-messages-service.js';
 
-class SampleElement extends PolymerElement {
-  static get template() {
+class SampleElement extends LitElement {
+  render() {
     return html`
-    <arc-messages-service></arc-messages-service>
+    <arc-messages-service
+      platform="electron-app"
+      channel="stable"
+      automessages
+      @messages-changed="${this._messagesHandler}"
+      @unread-changed="${this._unreadHandler}"></arc-messages-service>
     `;
   }
 }
 customElements.define('sample-element', SampleElement);
 ```
 
-### Installation
+Note that `unread` messages are included in `messages`.
+
+To mark a message as read use `markRead()` function which takes message `key` property
+as only argument. This operation changes size of `unread` property.
+
+To mark all are read use `makrkAllRead()` function. This eventually clears `unread` array.
+
+## Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/arc-messages-service
-cd api-url-editor
+cd arc-messages-service
 npm install
-npm install -g polymer-cli
-```
-
-### Running the demo locally
-
-```sh
-polymer serve --npm
-open http://127.0.0.1:<port>/demo/
 ```
 
 ### Running the tests
+
 ```sh
-polymer test --npm
+npm test
 ```
+
+## API components
+
+This components is a part of [API components ecosystem](https://elements.advancedrestclient.com/)

@@ -1,9 +1,9 @@
 /* global chance */
-import '../../../chance/dist/chance.min.js';
-import sinon from '../../../sinon/pkg/sinon-esm.js';
+import 'chance/dist/chance.min.js';
+import { fakeServer } from 'sinon/pkg/sinon-esm.js';
 export const MessagingServer = {
   createServer: function() {
-    this.srv = sinon.fakeServer.create({
+    this.srv = fakeServer.create({
       autoRespond: true
     });
     this.mock();
@@ -16,7 +16,7 @@ export const MessagingServer = {
   mockList: function() {
     const url = /^https:\/\/app\.advancedrestclient\.com\/*/;
     this.srv.respondWith('GET', url, function(request) {
-      let result = {
+      const result = {
         data: []
       };
       for (let i = 0; i < 20; i++) {
@@ -29,7 +29,8 @@ export const MessagingServer = {
   createListObject: function() {
     const result = {
       key: chance.string(),
-      message: 'test'
+      message: 'test',
+      time: chance.hammertime()
     };
 
     return result;

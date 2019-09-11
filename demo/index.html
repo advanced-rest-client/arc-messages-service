@@ -1,33 +1,37 @@
-<!DOCTYPE html>
-<html>
+</html>
 
+<!doctype html>
+<html lang="en-GB">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
   <title>arc-messages-service demo</title>
-  <script type="module" src="../../../@polymer/iron-demo-helpers/demo-pages-shared-styles.js"></script>
-  <script type="module" src="../../../@polymer/iron-demo-helpers/demo-snippet.js"></script>
-  <script type="module" src="../arc-messages-service.js"></script>
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-    </style>
-  </custom-style>
 </head>
+<body>
+  <div id="demo"></div>
 
-<body unresolved="">
-  <div class="vertical-section-container centered">
-    <h3>The arc-messages-service</h3>
-    <demo-snippet>
-      <dom-bind id="demo">
-        <template is="dom-bind">
-          <arc-messages-service platform="test" channel="test" messages="{{messages}}" unread="{{unread}}" auto-messages=""></arc-messages-service>
-          <p>Unread size: [[unread.length]]</p>
-          <p>All messages size: [[messages.length]]</p>
-        </template>
-      </dom-bind>
-    </demo-snippet>
-  </div>
+  <script type="module">
+    import { html, render } from 'lit-html';
+    import '../arc-messages-service.js';
+    function _messagesHandler(e) {
+      console.log(e.detail);
+    }
+
+    function _unreadHandler(e) {
+      console.log(e.detail);
+    }
+    render(
+      html`
+        <arc-messages-service
+          platform="test"
+          channel="test"
+          @messages-changed="${_messagesHandler}"
+          @unread-changed="${_unreadHandler}"
+          automessages></arc-messages-service>
+      `,
+      document.querySelector('#demo')
+    );
+  </script>
 </body>
-
 </html>

@@ -135,6 +135,7 @@ export class ArcMessagesServiceClient {
         }
       });
       worker.addEventListener('error', function(error) {
+        /* eslint-disable-next-line */
         console.error(error.message || error);
       });
       worker.port.start();
