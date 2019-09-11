@@ -73,3 +73,7 @@
 
 
 
+# [3.0.0](https://github.com/advanced-rest-client/arc-messages-service/compare/2.0.1...3.0.0) (2019-09-11)
+
+
+
