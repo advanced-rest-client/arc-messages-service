@@ -8,6 +8,10 @@
  *   arc-messages-service-worker.js
  */
 
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
 /**
  * Class that implements a worker process negotiates connections from clients
  * in other threads, and operates on an IndexedDB database object store.
