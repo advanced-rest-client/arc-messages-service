@@ -1,4 +1,4 @@
-import { fixture, assert } from '@open-wc/testing';
+import { fixture, assert, aTimeout } from '@open-wc/testing';
 import { MessagingServer } from './messages-server.js';
 import '../arc-messages-service.js';
 
@@ -50,6 +50,11 @@ describe('<arc-messages-service>', function() {
 
     beforeEach(async () => {
       element = await autoFixture();
+    });
+
+    afterEach(async () => {
+      await element.closeDb();
+      await aTimeout();
     });
 
     async function untilUnread(element) {

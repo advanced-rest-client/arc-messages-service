@@ -334,6 +334,9 @@ class ArcMessagesServiceWorker {
           transaction = db.transaction(storeName, 'readwrite');
           const store = transaction.objectStore(storeName);
           values.forEach((obj) => {
+            if (!obj.key) {
+              obj.key = obj.id;
+            }
             store.put(obj);
           });
         } catch (e) {

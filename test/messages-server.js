@@ -14,13 +14,14 @@ export const MessagingServer = {
   },
 
   mockList: function() {
-    const url = /^https:\/\/app\.advancedrestclient\.com\/*/;
-    this.srv.respondWith('GET', url, function(request) {
+    // http://api.advancedrestclient.com/v1/messages
+    const url = /^https:\/\/api\.advancedrestclient\.com\/v1\/messages*/;
+    this.srv.respondWith(url, function(request) {
       const result = {
-        data: []
+        items: []
       };
       for (let i = 0; i < 20; i++) {
-        result.data.push(MessagingServer.createListObject());
+        result.items.push(MessagingServer.createListObject());
       }
       request.respond(200, {}, JSON.stringify(result));
     });
@@ -28,7 +29,7 @@ export const MessagingServer = {
 
   createListObject: function() {
     const result = {
-      key: chance.string(),
+      id: chance.string(),
       message: 'test',
       time: chance.hammertime()
     };

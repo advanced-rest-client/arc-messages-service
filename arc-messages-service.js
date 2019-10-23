@@ -163,7 +163,7 @@ export class ArcMessagesService extends LitElement {
 
   constructor() {
     super();
-    this.endpointUri = 'https://app.advancedrestclient.com/info/messages';
+    this.endpointUri = 'https://api.advancedrestclient.com/v1/messages';
     const workerUrl = new URL('./arc-messages-service-worker.js', ArcMessagesService.importMeta.url).toString()
     this.client = new ArcMessagesServiceClient(workerUrl);
     this.client.connect();
@@ -228,11 +228,11 @@ export class ArcMessagesService extends LitElement {
    * @return {Promise}
    */
   async sync(incommingMessages) {
-    if (!incommingMessages.data || !incommingMessages.data.length) {
+    if (!incommingMessages.items || !incommingMessages.items.length) {
       return this.updateUnread();
     }
     const keys = await this.client.keys('data')
-    return await this._sync(incommingMessages.data, keys);
+    return await this._sync(incommingMessages.items, keys);
   }
 
   async _sync(incommingMessages, existingKeys) {
@@ -242,7 +242,7 @@ export class ArcMessagesService extends LitElement {
       insert = incommingMessages;
     } else {
       insert = incommingMessages.filter((message) =>
-        existingKeys.indexOf(message.key) === -1);
+        existingKeys.indexOf(message.id) === -1);
     }
     if (!insert.length) {
       return await this.updateUnread();
